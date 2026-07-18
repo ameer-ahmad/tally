@@ -28,6 +28,11 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   const res = await fetch(`${apiUrl}${path}`, {
     ...init,
     headers,
+  }).catch((err: unknown) => {
+    if (!navigator.onLine || err instanceof TypeError) {
+      throw new ApiError(0, 'You’re offline. Connect to sync your data.');
+    }
+    throw err;
   });
 
   if (res.status === 204) {
@@ -42,4 +47,8 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   }
 
   return body as T;
+}
+
+export function isOfflineError(err: unknown): boolean {
+  return err instanceof TypeError && (err.message === 'Failed to fetch' || !navigator.onLine);
 }

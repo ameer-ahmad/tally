@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import { MonthProvider } from './context/MonthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AppShell } from './components/AppShell';
+import { OfflineBanner } from './components/OfflineBanner';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { MetricsPage } from './pages/MetricsPage';
@@ -11,6 +12,7 @@ import { HabitsPage } from './pages/HabitsPage';
 export default function App() {
   return (
     <AuthProvider>
+      <OfflineBanner />
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />

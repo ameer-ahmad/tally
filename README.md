@@ -55,4 +55,15 @@ npm run dev:client
 | `server/` | Express API + Prisma |
 | `shared/` | Shared TypeScript types |
 
-Prisma schema lives in `server/prisma/schema.prisma` (models land in Phase 1).
+Prisma schema lives in `server/prisma/schema.prisma`.
+
+## PWA
+
+The client is installable (`vite-plugin-pwa`):
+
+- Manifest name / short name: **Tally**
+- Icons: `public/pwa-192x192.png`, `public/pwa-512x512.png`, `apple-touch-icon.png`
+- Service worker caches the app shell; API calls still need network
+- Offline banner appears when the browser is offline
+
+**Install check (Chrome):** run `npm run build --workspace=@tally/client` then `npm run preview --workspace=@tally/client`, open the preview URL over localhost, and look for the install icon in the address bar (Application → Manifest in DevTools).
