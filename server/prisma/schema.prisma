@@ -1,0 +1,13 @@
+// Prisma datasource for Supabase Postgres.
+// DATABASE_URL = pooler (runtime); DIRECT_URL = direct (migrations).
+// Full models are added in Phase 1.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}

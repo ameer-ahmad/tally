@@ -1,0 +1,21 @@
+{
+  "name": "tally",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev:client": "npm run dev --workspace=@tally/client",
+    "dev:server": "npm run dev --workspace=@tally/server",
+    "build": "npm run build --workspace=@tally/shared && npm run build --workspace=@tally/server && npm run build --workspace=@tally/client",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}
