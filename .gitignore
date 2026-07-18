@@ -10,3 +10,4 @@ coverage
 *.tsbuildinfo
 server/prisma/*.db
 server/prisma/*.db-journal
+.vercel

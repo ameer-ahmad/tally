@@ -7,11 +7,25 @@ import { habitsRouter } from './routes/habits.js';
 
 export function createApp() {
   const app = express();
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+  const allowedOrigins = new Set(
+    [
+      process.env.CLIENT_URL || 'http://localhost:5173',
+      process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : '',
+      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+    ].filter(Boolean),
+  );
 
   app.use(
     cors({
-      origin: clientUrl,
+      origin(origin, callback) {
+        if (!origin || allowedOrigins.has(origin)) {
+          callback(null, true);
+          return;
+        }
+        callback(null, false);
+      },
     }),
   );
   app.use(express.json());

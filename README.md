@@ -102,23 +102,49 @@ npm run preview --workspace=@tally/client
 
 Open the preview URL → install icon in the address bar, or DevTools → Application → Manifest / Service Workers.
 
-## Deploy
+## Deploy (Vercel)
 
-1. **Database** — Point `DATABASE_URL` / `DIRECT_URL` at Supabase; run Prisma migrate against production if needed.
-2. **API** — Host the Express server (Railway, Render, Fly, etc.). Set:
-   - `DATABASE_URL`, `DIRECT_URL`
-   - `SUPABASE_URL`
-   - `CLIENT_URL` = your production frontend origin
-   - `PORT` as required by the host
-3. **Client** — Build with production env:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-   - `VITE_API_URL` = public API URL  
-   Deploy `client/dist` to a static host (Netlify, Vercel, Cloudflare Pages, etc.).
-4. **Supabase Auth** — Authentication → URL Configuration:
-   - Site URL = production frontend origin
-   - Redirect URLs include that origin (and `http://localhost:5173` for local)
-5. Confirm RLS stays enabled on app tables (API uses the Postgres role; anon PostgREST stays locked down without policies).
+This repo deploys as **one Vercel project**: static Vite PWA + Express API serverless function.
+
+### 1. Push to GitHub (recommended)
+
+Connect the repo in [vercel.com/new](https://vercel.com/new), root directory = repo root (not `client/`).
+
+Or from the project folder:
+
+```bash
+npx vercel
+```
+
+### 2. Environment variables (Vercel → Project → Settings → Environment Variables)
+
+| Name | Value |
+| --- | --- |
+| `DATABASE_URL` | Supabase **Transaction** pooler URI |
+| `DIRECT_URL` | Supabase **Session** / direct URI |
+| `SUPABASE_URL` | `https://[ref].supabase.co` |
+| `CLIENT_URL` | Your production URL, e.g. `https://tally-xxx.vercel.app` (update after first deploy) |
+| `VITE_SUPABASE_URL` | Same as `SUPABASE_URL` |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon / publishable key |
+| `VITE_API_URL` | Leave **empty** (same-origin API on Vercel) |
+
+`VITE_*` vars must be available at **build** time. After changing them, redeploy.
+
+### 3. Supabase Auth URLs
+
+Authentication → URL Configuration:
+
+- **Site URL:** `https://your-app.vercel.app`
+- **Redirect URLs:** include `https://your-app.vercel.app/**` and `http://localhost:5173/**`
+
+### 4. Redeploy after setting `CLIENT_URL`
+
+First deploy gives you the `.vercel.app` domain; set `CLIENT_URL` to that `https://…` URL and redeploy so CORS matches.
+
+### Local vs production API
+
+- Local: `npm run dev:server` + `npm run dev:client` (`VITE_API_URL=http://localhost:3001`)
+- Vercel: API routes (`/health`, `/auth`, `/metrics`, `/habits`) rewrite to `api/index.ts`; the SPA is served from `client/dist`
 
 ## Security notes
 
