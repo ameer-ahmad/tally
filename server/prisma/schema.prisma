@@ -1,7 +1,3 @@
-// Prisma datasource for Supabase Postgres.
-// DATABASE_URL = pooler (runtime); DIRECT_URL = direct (migrations).
-// Full models are added in Phase 1.
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,4 +6,64 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id        String   @id @db.Uuid
+  email     String
+  createdAt DateTime @default(now()) @map("created_at")
+  metrics   Metric[]
+  habits    Habit[]
+
+  @@map("profiles")
+}
+
+model Metric {
+  id        String        @id @default(cuid())
+  userId    String        @map("user_id") @db.Uuid
+  name      String
+  unit      String?
+  createdAt DateTime      @default(now()) @map("created_at")
+  user      Profile       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entries   MetricEntry[]
+
+  @@index([userId])
+  @@map("metrics")
+}
+
+model MetricEntry {
+  id       String   @id @default(cuid())
+  metricId String   @map("metric_id")
+  date     DateTime @db.Date
+  value    Float
+  metric   Metric   @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  @@unique([metricId, date])
+  @@index([metricId])
+  @@map("metric_entries")
+}
+
+model Habit {
+  id          String            @id @default(cuid())
+  userId      String            @map("user_id") @db.Uuid
+  name        String
+  activeDays  Int[]             @default([]) @map("active_days")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  user        Profile           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completions HabitCompletion[]
+
+  @@index([userId])
+  @@map("habits")
+}
+
+model HabitCompletion {
+  id        String   @id @default(cuid())
+  habitId   String   @map("habit_id")
+  date      DateTime @db.Date
+  completed Boolean  @default(true)
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+  @@index([habitId])
+  @@map("habit_completions")
 }

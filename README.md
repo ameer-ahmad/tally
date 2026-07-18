@@ -24,8 +24,8 @@ copy client\.env.example client\.env
 
 | Variable | Where to find it |
 | --- | --- |
-| `DATABASE_URL` | Supabase → Project Settings → Database → Connection string → **Transaction** pooler (or direct for local) |
-| `DIRECT_URL` | Same page → **Direct** connection (for Prisma migrations) |
+| `DATABASE_URL` | Supabase → Database → **Transaction** pooler (`…pooler.supabase.com:6543`). Prefer pooler on Windows — `db.*` hosts can be IPv6-only. |
+| `DIRECT_URL` | Same page → **Session** pooler (`:5432`) or Direct connection (for Prisma migrations) |
 | `SUPABASE_URL` / `VITE_SUPABASE_URL` | Project Settings → API → Project URL |
 | `VITE_SUPABASE_ANON_KEY` | Project Settings → API → `anon` or publishable key |
 
