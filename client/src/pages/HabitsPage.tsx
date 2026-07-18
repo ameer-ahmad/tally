@@ -66,8 +66,19 @@ export function HabitsPage() {
 
   const todaysHabits = useMemo(() => {
     if (!data) return [];
-    return data.habits.filter((h) => isHabitActiveOn(h.activeDays, selectedWeekday));
-  }, [data, selectedWeekday]);
+    const completedIds = new Set(
+      data.completions
+        .filter((c) => c.date === selectedDate && c.completed)
+        .map((c) => c.habitId),
+    );
+    return data.habits
+      .filter((h) => isHabitActiveOn(h.activeDays, selectedWeekday))
+      .sort((a, b) => {
+        const aDone = completedIds.has(a.id) ? 1 : 0;
+        const bDone = completedIds.has(b.id) ? 1 : 0;
+        return aDone - bDone;
+      });
+  }, [data, selectedWeekday, selectedDate]);
 
   const completedOnSelected = useMemo(() => {
     const map = new Map<string, boolean>();
