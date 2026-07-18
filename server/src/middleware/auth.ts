@@ -8,6 +8,10 @@ export type AuthedRequest = Request & {
   userEmail: string;
 };
 
+export function getAuth(req: Request): AuthedRequest {
+  return req as unknown as AuthedRequest;
+}
+
 const supabaseUrl = process.env.SUPABASE_URL;
 
 if (!supabaseUrl) {
