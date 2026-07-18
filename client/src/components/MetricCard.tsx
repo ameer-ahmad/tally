@@ -246,7 +246,7 @@ export function MetricCard({ metric, onChanged, onDeleted }: Props) {
             <p className="muted chart-empty">No values logged this month yet.</p>
           ) : (
             <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+              <LineChart data={chartData} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                 <XAxis dataKey="day" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} width={40} />

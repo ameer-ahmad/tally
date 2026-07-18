@@ -244,7 +244,7 @@ export function HabitsPage() {
           {showChart ? (
             <div className="habits-chart">
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                <BarChart data={chartData} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                   <XAxis dataKey="day" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
                   <YAxis allowDecimals={false} tick={{ fontSize: 12 }} width={32} />

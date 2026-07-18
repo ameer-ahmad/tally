@@ -10,12 +10,18 @@ export function AppShell() {
       <header className="app-header">
         <div className="app-header-top">
           <p className="brand-mark">Tally</p>
-          <button type="button" className="text-btn" onClick={() => void signOut()}>
-            Sign out
-          </button>
+          <div className="app-header-actions">
+            {user?.email ? (
+              <span className="user-email muted" title={user.email}>
+                {user.email}
+              </span>
+            ) : null}
+            <button type="button" className="text-btn" onClick={() => void signOut()}>
+              Sign out
+            </button>
+          </div>
         </div>
         <MonthPicker />
-        {user?.email ? <p className="user-email muted">{user.email}</p> : null}
       </header>
 
       <main className="app-main">
