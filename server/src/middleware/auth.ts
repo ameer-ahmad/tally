@@ -14,15 +14,23 @@ export function getAuth(req: Request): AuthedRequest {
 
 const supabaseUrl = process.env.SUPABASE_URL;
 
-if (!supabaseUrl) {
-  throw new Error('SUPABASE_URL is required');
-}
+let JWKS: ReturnType<typeof createRemoteJWKSet> | null = null;
+let issuer = '';
 
-const JWKS = createRemoteJWKSet(new URL(`${supabaseUrl}/auth/v1/.well-known/jwks.json`));
-const issuer = `${supabaseUrl}/auth/v1`;
+function getAuthConfig() {
+  if (!supabaseUrl) {
+    throw new HttpError(500, 'SUPABASE_URL is not configured');
+  }
+  if (!JWKS) {
+    JWKS = createRemoteJWKSet(new URL(`${supabaseUrl}/auth/v1/.well-known/jwks.json`));
+    issuer = `${supabaseUrl}/auth/v1`;
+  }
+  return { JWKS, issuer };
+}
 
 export async function requireAuth(req: Request, _res: Response, next: NextFunction) {
   try {
+    const { JWKS: jwks, issuer: tokenIssuer } = getAuthConfig();
     const header = req.headers.authorization;
     if (!header?.startsWith('Bearer ')) {
       throw new HttpError(401, 'Missing or invalid Authorization header');
@@ -33,8 +41,8 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
       throw new HttpError(401, 'Missing access token');
     }
 
-    const { payload } = await jwtVerify(token, JWKS, {
-      issuer,
+    const { payload } = await jwtVerify(token, jwks, {
+      issuer: tokenIssuer,
       audience: 'authenticated',
     });
 

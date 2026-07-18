@@ -45,7 +45,19 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   }
 
   const text = await res.text();
-  const body = text ? (JSON.parse(text) as { error?: string }) : null;
+  let body: { error?: string } | null = null;
+  if (text) {
+    try {
+      body = JSON.parse(text) as { error?: string };
+    } catch {
+      throw new ApiError(
+        res.status,
+        text.startsWith('<!') || text.startsWith('<')
+          ? 'API returned a page instead of JSON — check the deploy/API route.'
+          : text.slice(0, 200),
+      );
+    }
+  }
 
   if (!res.ok) {
     throw new ApiError(res.status, body?.error || res.statusText || 'Request failed');

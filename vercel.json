@@ -11,10 +11,10 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
-    "api/index.ts": {
+    "api/index.mjs": {
       "memory": 1024,
       "maxDuration": 30,
-      "includeFiles": "{server/dist/**,node_modules/.prisma/**,node_modules/@prisma/client/**}"
+      "includeFiles": "{server/dist/**,node_modules/.prisma/**,node_modules/@prisma/client/**,node_modules/express/**,node_modules/cors/**,node_modules/jose/**,node_modules/zod/**,node_modules/@prisma/**}"
     }
   }
 }
