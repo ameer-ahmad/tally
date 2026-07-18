@@ -10,9 +10,12 @@
     "lint": "eslint .",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push"
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts"
   },
-  "dependencies": {
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },  "dependencies": {
     "@prisma/client": "^6.3.1",
     "@tally/shared": "*",
     "cors": "^2.8.5",

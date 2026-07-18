@@ -24,15 +24,22 @@ habitsRouter.use(requireAuth);
 
 const weekdaySchema = z.number().int().min(0).max(6);
 
+const activeDaysSchema = z
+  .array(weekdaySchema)
+  .max(7)
+  .refine((days) => new Set(days).size === days.length, {
+    message: 'activeDays must not contain duplicates',
+  });
+
 const createHabitSchema = z.object({
   name: z.string().trim().min(1).max(100),
-  activeDays: z.array(weekdaySchema).max(7),
+  activeDays: activeDaysSchema,
 });
 
 const updateHabitSchema = z
   .object({
     name: z.string().trim().min(1).max(100).optional(),
-    activeDays: z.array(weekdaySchema).max(7).optional(),
+    activeDays: activeDaysSchema.optional(),
   })
   .refine((body) => body.name !== undefined || body.activeDays !== undefined, {
     message: 'Provide name and/or activeDays',
